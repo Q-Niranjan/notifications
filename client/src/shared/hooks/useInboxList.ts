@@ -7,7 +7,7 @@ import { errorMessage, sortNotifications } from "../utils";
 import type { InboxClient } from "./useInboxClient";
 
 export function useInboxList(inboxClient: InboxClient, copy: NotificationCopy) {
-  const { client, clientRef, generationRef, isCurrent, clientKey, connectionError } =
+  const { clientRef, generationRef, isCurrent, clientKey, connectionError } =
     inboxClient;
 
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -76,7 +76,7 @@ export function useInboxList(inboxClient: InboxClient, copy: NotificationCopy) {
     } finally {
       if (isCurrent(generation)) setLoading(false);
     }
-  }, [client, clientRef, copy.error, filter, generationRef, isCurrent, refreshCounts]);
+  }, [clientRef, copy.error, filter, generationRef, isCurrent, refreshCounts]);
 
   const loadMore = useCallback(async () => {
     const active = clientRef.current;
