@@ -1,4 +1,4 @@
-import type { NotificationPerson } from "../types";
+import type { NotificationPerson } from "@/shared/types";
 
 export function formatPersonName(
   person?: Pick<NotificationPerson, "firstName" | "lastName">

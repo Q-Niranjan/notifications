@@ -1,5 +1,5 @@
-import type { Notification, NotificationFilter } from "../types";
-import { sortNotifications } from "./sortNotifications";
+import type { Notification, NotificationFilter } from "@/shared/types";
+import { sortNotifications } from "@/shared/utils/sortNotifications";
 
 export function mergeIncomingNotifications(
   prev: Notification[],

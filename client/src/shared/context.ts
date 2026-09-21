@@ -6,7 +6,7 @@ import type {
   NotificationCopy,
   NotificationFilter,
   NotificationRedirect,
-} from "./types";
+} from "@/shared/types";
 
 export interface InboxSessionValue {
   notifications: Notification[];

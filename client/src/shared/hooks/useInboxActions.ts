@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import type { Notification, NotificationCopy, NotificationRedirect } from "../types";
-import { SEEN_FLUSH_MS } from "../constants";
-import { errorMessage, followRedirect } from "../utils";
-import type { InboxClient } from "./useInboxClient";
-import type { InboxList } from "./useInboxList";
+import type { Notification, NotificationCopy, NotificationRedirect } from "@/shared/types";
+import { SEEN_FLUSH_MS } from "@/shared/constants";
+import { errorMessage, followRedirect } from "@/shared/utils";
+import type { InboxClient } from "@/shared/hooks/useInboxClient";
+import type { InboxList } from "@/shared/hooks/useInboxList";
 
 export function useInboxActions(
   inboxClient: InboxClient,

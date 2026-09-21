@@ -1,4 +1,4 @@
-import type { NotificationRedirect } from "../types";
+import type { NotificationRedirect } from "@/shared/types";
 
 export function followRedirect(redirect?: NotificationRedirect): void {
   const url = redirect?.url;

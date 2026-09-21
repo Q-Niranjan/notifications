@@ -1,4 +1,4 @@
-import type { NotificationCopy } from "../types";
+import type { NotificationCopy } from "@/shared/types";
 
 const DEFAULT_COPY: NotificationCopy = {
   notifications: "Notifications",

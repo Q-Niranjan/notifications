@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
-import { NotificationFactory } from "../../core/factory";
-import type { NotificationService } from "../../core/service";
-import type { NotificationConfig } from "../types";
-import { connectionKey, errorMessage } from "../utils";
-import "../../providers/register";
+import { NotificationFactory } from "@/core/factory";
+import type { NotificationService } from "@/core/service";
+import type { NotificationConfig } from "@/shared/types";
+import { connectionKey, errorMessage } from "@/shared/utils";
+import "@/providers/register";
 
 export type InboxClient = {
   client: NotificationService | null;

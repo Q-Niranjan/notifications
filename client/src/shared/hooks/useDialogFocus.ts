@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type RefObject } from "react";
-import { visibleControls } from "../utils";
+import { visibleControls } from "@/shared/utils";
 
 export function useDialogFocus(
   open: boolean,

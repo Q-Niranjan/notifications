@@ -2,12 +2,12 @@
 
 import { useEffect, useRef } from "react";
 import { Archive, ArchiveRestore, Check } from "lucide-react";
-import { useInboxSession } from "../shared/hooks";
-import type { Notification } from "../shared/types";
-import { formatPersonName, formatRelativeTime } from "../shared/utils";
-import { Avatar } from "./Avatar";
-import { ExpandableMessage } from "./ExpandableMessage";
-import { NotificationActions } from "./NotificationActions";
+import { useInboxSession } from "@/shared/hooks";
+import type { Notification } from "@/shared/types";
+import { formatPersonName, formatRelativeTime } from "@/shared/utils";
+import { Avatar } from "@/components/Avatar";
+import { ExpandableMessage } from "@/components/ExpandableMessage";
+import { NotificationActions } from "@/components/NotificationActions";
 
 const SEEN_VISIBLE_MS = 1000;
 

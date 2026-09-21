@@ -1,8 +1,8 @@
 "use client";
 
 import { Bell as BellIcon } from "lucide-react";
-import { useInboxSession } from "../shared/hooks";
-import type { NotificationBellProps } from "../shared/types";
+import { useInboxSession } from "@/shared/hooks";
+import type { NotificationBellProps } from "@/shared/types";
 
 export function Bell({ className = "" }: NotificationBellProps) {
   const { unreadCount, open, toggle, copy, panelId } = useInboxSession();

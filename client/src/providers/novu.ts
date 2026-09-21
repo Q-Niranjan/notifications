@@ -3,15 +3,14 @@ import type {
   Notification,
   NotificationAction,
   NotificationConnection,
-  NotificationFilter,
   NotificationListOptions,
   NotificationListResult,
   NotificationPerson,
   NotificationRedirect,
   NotificationWorkflow,
-} from "../shared/types";
-import type { NotificationService } from "../core/service";
-import { sortNotifications, throwIfError } from "../shared/utils";
+} from "@/shared/types";
+import type { NotificationService } from "@/core/service";
+import { sortNotifications, throwIfError } from "@/shared/utils";
 
 type RawNotification = Partial<InboxNotification> & {
   _id?: string;
@@ -143,15 +142,6 @@ function mergeByCreatedAt(lists: Notification[][]): Notification[] {
   return sortNotifications(merged);
 }
 
-function listQuery(
-  filter: NotificationFilter = "all"
-): { archived?: boolean; read?: boolean } {
-  if (filter === "archived") return { archived: true };
-  if (filter === "unread") return { archived: false, read: false };
-  if (filter === "read") return { archived: false, read: true };
-  return {};
-}
-
 function toNovuContext(
   context?: NotificationConnection["context"]
 ): Record<string, string | { id: string; data?: Record<string, unknown> }> | undefined {
@@ -224,11 +214,18 @@ export class NovuNotificationService implements NotificationService {
       };
     }
 
+    const query =
+      filter === "archived"
+        ? { archived: true }
+        : filter === "unread"
+          ? { archived: false, read: false }
+          : { archived: false, read: true };
+
     const { data, error } = await this.novu.notifications.list({
       limit,
       after: options.after,
       useCache: false,
-      ...listQuery(filter),
+      ...query,
     });
     throwIfError(error, "list notifications");
     return {

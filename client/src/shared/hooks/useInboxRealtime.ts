@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { LIVE_MERGE_RETRY_MS, PAGE_SIZE } from "../constants";
-import { mergeIncomingNotifications } from "../utils";
-import type { InboxClient } from "./useInboxClient";
-import type { InboxList } from "./useInboxList";
+import { LIVE_MERGE_RETRY_MS, PAGE_SIZE } from "@/shared/constants";
+import { mergeIncomingNotifications } from "@/shared/utils";
+import type { InboxClient } from "@/shared/hooks/useInboxClient";
+import type { InboxList } from "@/shared/hooks/useInboxList";
 
 export function useInboxRealtime(inboxClient: InboxClient, list: InboxList) {
   const { client, generationRef, isCurrent } = inboxClient;

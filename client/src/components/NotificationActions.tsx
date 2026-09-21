@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useInboxSession } from "../shared/hooks";
-import type { Notification, NotificationAction } from "../shared/types";
+import { useInboxSession } from "@/shared/hooks";
+import type { Notification, NotificationAction } from "@/shared/types";
 
 export function NotificationActions({
   notification,

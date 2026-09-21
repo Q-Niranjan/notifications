@@ -1,15 +1,15 @@
 "use client";
 
 import { createElement, useCallback, useContext, useId, useMemo, useState, type ReactNode } from "react";
-import type { NotificationInboxProps } from "../types";
-import { mergeCopy } from "../utils";
-import { InboxSessionContext, type InboxSessionValue } from "../context";
-import { useInboxActions } from "./useInboxActions";
-import { useInboxClient } from "./useInboxClient";
-import { useInboxList } from "./useInboxList";
-import { useInboxRealtime } from "./useInboxRealtime";
+import type { NotificationInboxProps } from "@/shared/types";
+import { mergeCopy } from "@/shared/utils";
+import { InboxSessionContext, type InboxSessionValue } from "@/shared/context";
+import { useInboxActions } from "@/shared/hooks/useInboxActions";
+import { useInboxClient } from "@/shared/hooks/useInboxClient";
+import { useInboxList } from "@/shared/hooks/useInboxList";
+import { useInboxRealtime } from "@/shared/hooks/useInboxRealtime";
 
-export type { InboxSessionValue } from "../context";
+export type { InboxSessionValue } from "@/shared/context";
 
 export function useInboxSession(): InboxSessionValue {
   const ctx = useContext(InboxSessionContext);

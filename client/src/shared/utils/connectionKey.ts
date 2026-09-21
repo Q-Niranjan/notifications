@@ -1,4 +1,4 @@
-import type { NotificationConnection } from "../types";
+import type { NotificationConnection } from "@/shared/types";
 
 function stableSerialize(value: unknown): string {
   if (value == null) return "";

@@ -1,6 +1,6 @@
 # @openg2p/notification
 
-In-app notification inbox for OpenG2P frontends.
+In-app notification inbox for OpenG2P UI.
 
 Host apps render `Inbox` and pass a connection config. The package talks to the notification provider through an adapter, so application UI never imports Novu (or any other vendor SDK) directly.
 
@@ -45,12 +45,41 @@ The browser connects to the provider. OpenG2P backends do not proxy inbox REST o
 
 The host app maps its own env or runtime config into `Inbox` `config`. `subscriberId` is the current user. Do not render `Inbox` until `provider`, `applicationIdentifier`, and `subscriberId` are all set.
 
+## Development
+
+From `notifications/client`:
+
+```bash
+npm install
+npm run build
+npm test
+npm pack
+```
+
+| Command | What it does |
+|---|---|
+| `npm install` | Install dependencies |
+| `npm run build` | Compile `src` to `dist` (CJS, ESM, and types) |
+| `npm test` | Run the Vitest suite once |
+| `npm run test:watch` | Re-run tests on file changes |
+| `npm pack` | Create a tarball from `dist` for local installs |
+
+Build before `npm pack`. The published package only includes `dist`.
+
+Optional:
+
+```bash
+npm run lint
+npm run lint:fix
+npm run clean
+```
+
 ## Usage
 
 ```tsx
 "use client";
 
-import { Inbox } from "@openg2p/notification-ui-lib";
+import { Inbox } from "@openg2p/notification";
 
 <Inbox
   config={{
@@ -66,10 +95,6 @@ import { Inbox } from "@openg2p/notification-ui-lib";
   }}
 />
 ```
-
-Pass children to `Inbox` to replace the default `Bell`. `useInboxSession` must be used under `Inbox`.
-
-Peer dependencies: `react`, `react-dom`, and `lucide-react`. The inbox uses Tailwind utility classes, so the host app must generate them (for Next.js, add `transpilePackages: ["@openg2p/notification-ui-lib"]`).
 
 To swap providers later, implement `NotificationService` and call `NotificationFactory.register("name", Implementation)`.
 

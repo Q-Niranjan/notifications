@@ -1,2 +1,2 @@
-export { Inbox } from "./Inbox";
-export { Bell } from "./Bell";
+export { Inbox } from "@/components/Inbox";
+export { Bell } from "@/components/Bell";

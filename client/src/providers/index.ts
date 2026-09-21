@@ -1,1 +1,1 @@
-export { NovuNotificationService } from "./novu";
+export { NovuNotificationService } from "@/providers/novu";

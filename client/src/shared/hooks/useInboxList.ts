@@ -1,10 +1,10 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { Notification, NotificationCopy, NotificationFilter } from "../types";
-import { PAGE_SIZE } from "../constants";
-import { errorMessage, sortNotifications } from "../utils";
-import type { InboxClient } from "./useInboxClient";
+import type { Notification, NotificationCopy, NotificationFilter } from "@/shared/types";
+import { PAGE_SIZE } from "@/shared/constants";
+import { errorMessage, sortNotifications } from "@/shared/utils";
+import type { InboxClient } from "@/shared/hooks/useInboxClient";
 
 export function useInboxList(inboxClient: InboxClient, copy: NotificationCopy) {
   const { clientRef, generationRef, isCurrent, clientKey, connectionError } =

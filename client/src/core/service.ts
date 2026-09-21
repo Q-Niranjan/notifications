@@ -3,7 +3,7 @@ import type {
   NotificationConnection,
   NotificationListOptions,
   NotificationListResult,
-} from "../shared/types";
+} from "@/shared/types";
 
 export interface NotificationService {
   list(

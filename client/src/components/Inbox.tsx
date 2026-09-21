@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import { InboxSessionProvider, useDialogFocus, useInboxSession } from "../shared/hooks";
-import type { NotificationInboxProps } from "../shared/types";
-import { Bell } from "./Bell";
-import { InboxPanel } from "./InboxPanel";
+import { InboxSessionProvider, useDialogFocus, useInboxSession } from "@/shared/hooks";
+import type { NotificationInboxProps } from "@/shared/types";
+import { Bell } from "@/components/Bell";
+import { InboxPanel } from "@/components/InboxPanel";
 
 function InboxShell({ children }: { children?: ReactNode }) {
   const { open, setOpen } = useInboxSession();

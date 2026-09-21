@@ -1,4 +1,4 @@
-import { errorMessage } from "./errorMessage";
+import { errorMessage } from "@/shared/utils/errorMessage";
 
 export function throwIfError(error: unknown, action: string): void {
   if (!error) return;

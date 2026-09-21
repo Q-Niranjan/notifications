@@ -7,9 +7,9 @@ import {
   Loader2,
   X,
 } from "lucide-react";
-import { useInboxSession } from "../shared/hooks";
-import type { NotificationFilter } from "../shared/types";
-import { NotificationRow } from "./NotificationRow";
+import { useInboxSession } from "@/shared/hooks";
+import type { NotificationFilter } from "@/shared/types";
+import { NotificationRow } from "@/components/NotificationRow";
 
 function FilterTabs() {
   const { filter, setFilter, copy, unreadCount, readCount, archivedCount, listId } =

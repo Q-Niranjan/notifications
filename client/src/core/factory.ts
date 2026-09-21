@@ -1,8 +1,8 @@
-import type { NotificationConnection } from "../shared/types";
+import type { NotificationConnection } from "@/shared/types";
 import type {
   NotificationProvider,
   NotificationService,
-} from "./service";
+} from "@/core/service";
 
 const providers = new Map<string, NotificationProvider>();
 

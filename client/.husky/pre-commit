@@ -1,2 +1,3 @@
 package_dir="$(dirname "$0")/.."
 npx --prefix "$package_dir" lint-staged --cwd "$package_dir"
+npm --prefix "$package_dir" test
