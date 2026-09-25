@@ -158,7 +158,7 @@ export class NovuNotificationService implements NotificationService {
   private novu: Novu;
 
   constructor(connection: NotificationConnection) {
-    if (!connection.subscriberId) {
+    if (!connection.subscriber?.subscriberId) {
       throw new Error(
         "[@openg2p/notification] Novu requires subscriberId."
       );
@@ -172,7 +172,7 @@ export class NovuNotificationService implements NotificationService {
 
     this.novu = new Novu({
       applicationIdentifier: connection.applicationIdentifier,
-      subscriber: connection.subscriberId,
+      subscriber: connection.subscriber,
       subscriberHash: connection.subscriberHash,
       apiUrl: connection.backendUrl,
       backendUrl: connection.backendUrl,

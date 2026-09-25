@@ -22,6 +22,7 @@ export function useInboxClient(
 ): InboxClient {
   const connection = {
     subscriberId: config.subscriberId,
+    subscriber: config.subscriber,
     applicationIdentifier: config.applicationIdentifier,
     subscriberHash: config.subscriberHash,
     backendUrl: config.backendUrl,

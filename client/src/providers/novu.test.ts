@@ -41,7 +41,7 @@ vi.mock("@novu/js", () => ({
 }));
 
 const connection = {
-  subscriberId: "user-1",
+  subscriber: { subscriberId: "user-1" },
   applicationIdentifier: "app-1",
   subscriberHash: "hash",
   backendUrl: "https://api.example.com",
@@ -190,11 +190,11 @@ describe("NovuNotificationService", () => {
   });
 
   it("requires subscriberId and applicationIdentifier", () => {
-    expect(() => new NovuNotificationService({ subscriberId: "" })).toThrow(
+    expect(() => new NovuNotificationService({ subscriber: { subscriberId: "" } })).toThrow(
       "[@openg2p/notification] Novu requires subscriberId."
     );
     expect(
-      () => new NovuNotificationService({ subscriberId: "user-1" })
+      () => new NovuNotificationService({ subscriber: { subscriberId: "user-1" } })
     ).toThrow("[@openg2p/notification] Novu requires applicationIdentifier.");
   });
 
@@ -203,7 +203,7 @@ describe("NovuNotificationService", () => {
 
     expect(novu.lastOptions).toEqual({
       applicationIdentifier: "app-1",
-      subscriber: "user-1",
+      subscriber: { subscriberId: "user-1" },
       subscriberHash: "hash",
       apiUrl: "https://api.example.com",
       backendUrl: "https://api.example.com",
@@ -218,7 +218,7 @@ describe("NovuNotificationService", () => {
 
   it("omits context when the connection has none", () => {
     new NovuNotificationService({
-      subscriberId: "user-1",
+      subscriber: { subscriberId: "user-1" },
       applicationIdentifier: "app-1",
     });
     expect(novu.lastOptions?.context).toBeUndefined();

@@ -70,8 +70,14 @@ export type NotificationContextValue =
   | boolean
   | { id: string; data?: Record<string, unknown> };
 
-export type NotificationConnection = {
+export type NotificationSubscriber = {
   subscriberId: string;
+  email?: string;
+  firstName?: string;
+};
+
+export type NotificationConnection = {
+  subscriber?: NotificationSubscriber;
   applicationIdentifier?: string;
   subscriberHash?: string;
   backendUrl?: string;

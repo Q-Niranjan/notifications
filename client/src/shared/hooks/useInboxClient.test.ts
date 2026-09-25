@@ -58,6 +58,7 @@ describe("useInboxClient", () => {
       subscriberHash: "hash",
       backendUrl: "https://api.example.com",
       socketUrl: "wss://ws.example.com",
+      subscriber: undefined,
       context: undefined,
       contextHash: undefined,
     });

@@ -23,5 +23,6 @@ export function connectionKey(config: NotificationConnection): string {
     config.socketUrl ?? "",
     config.contextHash ?? "",
     stableSerialize(config.context),
+    stableSerialize(config.subscriber),
   ].join("|");
 }
