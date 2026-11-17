@@ -1,0 +1,51 @@
+name: Release package
+
+# Releases → publish a release from a tag: build and attach openg2p-notification-<version>.tgz
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  attach-package:
+    runs-on: ubuntu-latest
+    env:
+      RELEASE_LABEL: ${{ github.event.release.tag_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.release.tag_name }}
+
+      - name: Normalize tag name
+        run: |
+          LABEL="${RELEASE_LABEL}"
+          [[ "$LABEL" == v* ]] || LABEL="v${LABEL}"
+          echo "RELEASE_LABEL=${LABEL}" >> "$GITHUB_ENV"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Build client package
+        working-directory: client
+        env:
+          HUSKY: "0"
+        run: |
+          VERSION="${RELEASE_LABEL#v}"
+          PACKAGE_NAME="openg2p-notification-${VERSION}.tgz"
+
+          npm ci
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
+          npm run build
+          npm pack
+          cp openg2p-notification-*.tgz "/tmp/${PACKAGE_NAME}"
+          echo "PACKAGE_NAME=${PACKAGE_NAME}" >> "$GITHUB_ENV"
+
+      - name: Attach package to release
+        run: gh release upload "${RELEASE_LABEL}" "/tmp/${PACKAGE_NAME}" --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
