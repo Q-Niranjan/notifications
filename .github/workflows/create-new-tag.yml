@@ -1,0 +1,49 @@
+name: Create new tag
+
+# Create and push a tag like: client-v0.1.0
+on:
+  push:
+    tags:
+      - "client-v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Build client package
+        working-directory: client
+        env:
+          HUSKY: "0"
+        run: |
+          npm ci
+          npm run build
+          npm pack
+          cp openg2p-notification-*.tgz /tmp/package.tgz
+
+      - name: Commit tarball
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          BRANCH="${{ github.event.repository.default_branch }}"
+          git fetch origin "$BRANCH"
+          git checkout "$BRANCH"
+          git pull --ff-only origin "$BRANCH"
+
+          rm -f client/*.tgz
+          cp /tmp/package.tgz client/
+
+          git add client/*.tgz
+          git commit -m "chore(client): build package for tag ${{ github.ref_name }}"
+          git push origin "HEAD:$BRANCH"
