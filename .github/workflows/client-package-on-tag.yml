@@ -1,0 +1,71 @@
+name: Client package on tag
+
+on:
+  push:
+    tags:
+      - "*"
+
+concurrency:
+  group: client-package-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-commit-tarball:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout tag
+        uses: actions/checkout@v4
+
+      - name: Resolve version from tag
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: client/package-lock.json
+
+      - name: Install, build, test, and pack
+        working-directory: client
+        env:
+          HUSKY: "0"
+        run: |
+          npm version "${{ steps.version.outputs.version }}" --no-git-tag-version --allow-same-version
+          npm ci
+          npm run build
+          npm test
+          npm pack
+          mv openg2p-notification-*.tgz "/tmp/openg2p-notification-${{ steps.version.outputs.version }}.tgz"
+          git checkout -- package.json package-lock.json
+
+      - name: Commit tarball on default branch
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          DEFAULT_BRANCH="${{ github.event.repository.default_branch }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git fetch origin "$DEFAULT_BRANCH"
+          git checkout "$DEFAULT_BRANCH"
+          git pull --ff-only origin "$DEFAULT_BRANCH"
+
+          mkdir -p client/releases
+          find client/releases -maxdepth 1 -name "*.tgz" -delete
+          cp "/tmp/openg2p-notification-${VERSION}.tgz" "client/releases/openg2p-notification-${VERSION}.tgz"
+
+          git add "client/releases/openg2p-notification-${VERSION}.tgz"
+          if git diff --staged --quiet; then
+            echo "No changes to commit (tarball unchanged)."
+            exit 0
+          fi
+          git commit -m "chore(client): add package tarball for ${TAG}"
+          git push origin "HEAD:${DEFAULT_BRANCH}"
