@@ -1,6 +1,5 @@
 name: Create new tag
 
-# Auto: push tag v1.0.0  |  Manual: Actions → Run workflow
 on:
   push:
     tags:
@@ -8,12 +7,12 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: "Version for commit message (e.g. v1.0.0)"
+        description: "Package version (e.g. v1.0.0)"
         required: true
         default: "v1.0.0"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -34,24 +33,18 @@ jobs:
         env:
           HUSKY: "0"
         run: |
+          VERSION="${RELEASE_LABEL#v}"
+          PACKAGE_NAME="openg2p-notification-${VERSION}.tgz"
+
           npm ci
+          npm version "$VERSION" --no-git-tag-version --allow-same-version
           npm run build
           npm pack
-          cp openg2p-notification-*.tgz /tmp/package.tgz
+          cp openg2p-notification-*.tgz "/tmp/${PACKAGE_NAME}"
+          echo "PACKAGE_NAME=${PACKAGE_NAME}" >> "$GITHUB_ENV"
 
-      - name: Commit tarball
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          BRANCH="${{ github.event.repository.default_branch }}"
-          git fetch origin "$BRANCH"
-          git checkout "$BRANCH"
-          git pull --ff-only origin "$BRANCH"
-
-          rm -f client/*.tgz
-          cp /tmp/package.tgz client/
-
-          git add client/*.tgz
-          git commit -m "chore(client): build package for ${RELEASE_LABEL}"
-          git push origin "HEAD:$BRANCH"
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.PACKAGE_NAME }}
+          path: /tmp/${{ env.PACKAGE_NAME }}
