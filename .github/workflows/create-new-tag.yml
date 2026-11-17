@@ -1,10 +1,16 @@
 name: Create new tag
 
-# Create and push a tag like: client-v0.1.0
+# Auto: push tag v1.0.0  |  Manual: Actions → Run workflow
 on:
   push:
     tags:
-      - "client-v*"
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version for commit message (e.g. v1.0.0)"
+        required: true
+        default: "v1.0.0"
 
 permissions:
   contents: write
@@ -12,6 +18,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      RELEASE_LABEL: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
     steps:
       - uses: actions/checkout@v4
 
@@ -45,5 +53,5 @@ jobs:
           cp /tmp/package.tgz client/
 
           git add client/*.tgz
-          git commit -m "chore(client): build package for tag ${{ github.ref_name }}"
+          git commit -m "chore(client): build package for ${RELEASE_LABEL}"
           git push origin "HEAD:$BRANCH"
