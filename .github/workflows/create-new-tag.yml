@@ -1,7 +1,7 @@
 name: Create new tag
 
-# On develop (or chosen branch): Actions → Run workflow → enter v1.0.0
-# Builds the package, uploads the .tgz, and creates + pushes that git tag on the current commit.
+# Path A — Actions → Run workflow (on develop): build, tag, release + .tgz asset
+# Path B — Releases → publish release from an existing tag: build and attach .tgz to that release
 on:
   workflow_dispatch:
     inputs:
@@ -9,6 +9,8 @@ on:
         description: "Tag to create (e.g. v1.0.0)"
         required: true
         default: "v1.0.0"
+  release:
+    types: [published]
 
 permissions:
   contents: write
@@ -17,9 +19,11 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      RELEASE_LABEL: ${{ inputs.version }}
+      RELEASE_LABEL: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.version }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || github.ref }}
 
       - name: Normalize tag name
         run: |
@@ -48,13 +52,14 @@ jobs:
           cp openg2p-notification-*.tgz "/tmp/${PACKAGE_NAME}"
           echo "PACKAGE_NAME=${PACKAGE_NAME}" >> "$GITHUB_ENV"
 
-      - name: Upload package
+      - name: Upload package (workflow artifact)
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PACKAGE_NAME }}
           path: /tmp/${{ env.PACKAGE_NAME }}
 
       - name: Create and push tag
+        if: github.event_name == 'workflow_dispatch'
         run: |
           set -euo pipefail
           if git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_LABEL}" >/dev/null 2>&1; then
@@ -65,3 +70,18 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git tag -a "${RELEASE_LABEL}" -m "chore(client): ${RELEASE_LABEL}"
           git push origin "refs/tags/${RELEASE_LABEL}"
+
+      - name: Create GitHub Release and attach package
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.RELEASE_LABEL }}
+          name: ${{ env.RELEASE_LABEL }}
+          files: /tmp/${{ env.PACKAGE_NAME }}
+          generate_release_notes: true
+
+      - name: Attach package to existing release
+        if: github.event_name == 'release'
+        run: gh release upload "${RELEASE_LABEL}" "/tmp/${PACKAGE_NAME}" --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
