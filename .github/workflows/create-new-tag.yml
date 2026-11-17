@@ -1,26 +1,31 @@
 name: Create new tag
 
+# On develop (or chosen branch): Actions → Run workflow → enter v1.0.0
+# Builds the package, uploads the .tgz, and creates + pushes that git tag on the current commit.
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
     inputs:
       version:
-        description: "Package version (e.g. v1.0.0)"
+        description: "Tag to create (e.g. v1.0.0)"
         required: true
         default: "v1.0.0"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      RELEASE_LABEL: ${{ github.event_name == 'workflow_dispatch' && inputs.version || github.ref_name }}
+      RELEASE_LABEL: ${{ inputs.version }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Normalize tag name
+        run: |
+          LABEL="${RELEASE_LABEL}"
+          [[ "$LABEL" == v* ]] || LABEL="v${LABEL}"
+          echo "RELEASE_LABEL=${LABEL}" >> "$GITHUB_ENV"
 
       - uses: actions/setup-node@v4
         with:
@@ -48,3 +53,15 @@ jobs:
         with:
           name: ${{ env.PACKAGE_NAME }}
           path: /tmp/${{ env.PACKAGE_NAME }}
+
+      - name: Create and push tag
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --tags origin "refs/tags/${RELEASE_LABEL}" >/dev/null 2>&1; then
+            echo "::error::Tag ${RELEASE_LABEL} already exists on the remote."
+            exit 1
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "${RELEASE_LABEL}" -m "chore(client): ${RELEASE_LABEL}"
+          git push origin "refs/tags/${RELEASE_LABEL}"
